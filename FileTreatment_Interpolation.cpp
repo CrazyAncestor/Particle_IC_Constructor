@@ -126,6 +126,7 @@ int LoadTable( double  *&Data, const char *filename, const int NCol_Target, cons
    }
 
    file.close();
+   return nrow;
 
 } // FUNCTION : LoadTable
 

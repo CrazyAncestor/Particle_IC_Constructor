@@ -1,4 +1,4 @@
-CC = g++
+CC = g++ -std=c++11
 OBJ = main.o Particle_IC_Constructor.o FileTreatment_Interpolation.o
 
 OPENFLAG=-fopenmp

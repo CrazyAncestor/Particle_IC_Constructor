@@ -14,12 +14,15 @@ double *Table_MassProf_derho_overdx_Models;
 double *Table_MassProf_g_Models;
 double *Table_MassProf_pot_Models;
 
-double randomReal(double low,double high){
-  srand( time(NULL) );
+double Particle_IC_Constructor::randomReal(double low,double high){
+  std::random_device rd;
 
-  /* 產生 [0, 1) 的浮點數亂數 */
-  double x = (double) rand() / (RAND_MAX + 1.0);
+    /* 梅森旋轉演算法 */
+  std::mt19937 generator( rd() );
 
+  std::uniform_real_distribution<double> unif(0.0, 1.0);
+  double x = unif(generator);
+  
   return x*(high-low)+low;
 }
 double SQR(double a){
@@ -377,6 +380,7 @@ void Particle_IC_Constructor::initialize_mass_UNKNOWN(int Models_massprofnbin){
     dr = Table_MassProf_r_Models[b] - Table_MassProf_r_Models[b-1];
     r = (Table_MassProf_r_Models[b] + Table_MassProf_r_Models[b-1])/2;
     Table_MassProf_M_Models[b] = Table_MassProf_M_Models[b-1] + 4*M_PI*pow(r,2) *rho * dr;
+
   }
 
   //Rhodr
@@ -528,6 +532,7 @@ void Particle_IC_Constructor::init(string type,double al,double newton_g,double 
   Models_rho=rho;
   Models_r=r;
   Models_massprofnbin=nbin;
+  
   Models_maxr=rmax;
 
   Trunc_Flag=trunc_flag;
@@ -543,7 +548,7 @@ void Particle_IC_Constructor::init(string type,double al,double newton_g,double 
     
     int row_density_Models;
     row_density_Models= LoadTable( Table_MassProf_rho_Models, Filename, 1, Tcol_rho,true );
-    
+
     Models_massprofnbin=row_r_Models;
 
     Table_MassProf_M_Models = new double [Models_massprofnbin];
@@ -551,10 +556,11 @@ void Particle_IC_Constructor::init(string type,double al,double newton_g,double 
     Table_MassProf_g_Models = new double [Models_massprofnbin];
     Table_MassProf_pot_Models = new double [Models_massprofnbin];
     Table_MassProf_derho_overdx_Models = new double [Models_massprofnbin];
-
+    
     initialize_mass_UNKNOWN(Models_massprofnbin);
     initialize_pot_UNKNOWN(Models_massprofnbin);
     initialize_prob_dens();
+
   }
 
   else{
@@ -574,7 +580,8 @@ void Particle_IC_Constructor::init(string type,double al,double newton_g,double 
 
   
 }
-double Particle_IC_Constructor::set_vel(double x){  
+double Particle_IC_Constructor::set_vel(double x){ 
+
   double index,sum=0;
   double psi_per =-potential_Models(x);
   for(int k =0;k<size_Models;k++){
@@ -588,18 +595,19 @@ double Particle_IC_Constructor::set_vel(double x){
   double sum_rad,sum_mes=0,par,psi_ass;
   int index_ass;
 
-  sum_rad = randomReal(0., 1.0); 
+  sum_rad = randomReal(0., 1.); 
   sum_rad*=sum;
 
   for(int k =0;k<size_Models;k++){
+    index_ass =k-1;
     if(sum_mes>sum_rad){
-      index_ass =k-1;
       par = (sum_mes-sum_rad)/(prob_dens[index_ass] *pow(psi_per-psi[index_ass],0.5) *delta);
       break;
       }
     sum_mes += prob_dens[k] *pow(psi_per-psi[k],0.5) *delta;
   }
   psi_ass = psi[index_ass] +delta *par;
+  
   if(-2*(psi_ass+potential_Models(x))<0){
     return 0;
   }
@@ -607,7 +615,18 @@ double Particle_IC_Constructor::set_vel(double x){
   
   return v;
 }  
+double Particle_IC_Constructor::set_radius(){  
+  double Enclosed_mass=Table_MassProf_M_Models[Models_massprofnbin-1];
 
+  double x = randomReal(0.,1.);
+
+  double M_rand = x*Enclosed_mass;//randomReal(0., 1.0)*Enclosed_mass;
+  
+  double index = 0; 
+  double radius = Interpolation(Models_massprofnbin,Table_MassProf_M_Models,Table_MassProf_r_Models,M_rand);
+  
+  return radius;
+}  
 double Particle_IC_Constructor::set_vel_test(double r){  
   const double TotM_Inf    = 4.0/3.0*M_PI*CUBE(Models_r)*Models_rho;
   const double Vmax_Fac    = sqrt( 2.0*Models_NEWTON_G*TotM_Inf );

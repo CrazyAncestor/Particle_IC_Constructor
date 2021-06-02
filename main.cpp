@@ -24,4 +24,20 @@ int main(){
     double Newton_G = 1.0;
     constructor_Models.init("UNKNOWN",Models_Alpha,1.0,Models_Rho0,Models_R0,Models_MassProfNBin,Models_MaxR,Models_RSeed,Models_truncation,0.7,Models_r_col,Models_rho_col,"profile_halo.txt");
 
+    //Example Code for Constructing Particle ICs (May be modified in your present code)
+    const int N = 1000;
+    double par_r [N];
+    double par_vel[N];
+    int count = 0;
+    for (int p=0;p<N;p++){
+        par_r[p] = constructor_Models.set_radius();
+        //cout<<par_r[p]<<endl;
+        par_vel[p] = constructor_Models.set_vel(p/1000.);//par_r[p]/Models_R0
+        //cout<<par_vel[p]<<endl;
+        //cout<<p<<endl;
+        if (par_r[p]>Models_MaxR){
+            count++;
+        }
+    }
+    cout<<count<<endl;
 }

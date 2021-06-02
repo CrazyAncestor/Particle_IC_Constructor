@@ -1,12 +1,17 @@
 #ifndef Particle_IC_Constructor_H
 #define Particle_IC_Constructor_H
 
+#define DEBUG
+#include<random>
+
+#include<fstream>
 #include"vector"
 #include<string.h>
 #include<sstream>
+
 #include<iostream>
-#include<fstream>
-#include<random>
+
+
 #include<time.h>
 using namespace std;
 
@@ -50,7 +55,8 @@ class Particle_IC_Constructor
         Particle_IC_Constructor();
         virtual ~Particle_IC_Constructor();
         void init(string type,double al,double newton_g,double rho,double r,int nbin,double rmax,int rseed,bool trunc_flag,double trunc_fac,int r_col,int rho_col,const char* Filename);        
-        double set_vel(double r);
+        double set_vel(double x);
+        double set_radius();
         double set_vel_test(double r);
         double vel_dispersion(double x);
         double specific_prob(double x,double vm);
@@ -70,6 +76,10 @@ class Particle_IC_Constructor
         void smooth_all(double* x,int start,int fin);
         double set_mass( double x );
         double set_rho( double x );
+
+        //Random Number
+        double randomReal(double low,double high);
+        
         
         
         MP params;
