@@ -517,7 +517,7 @@ void Particle_IC_Constructor::initialize_prob_dens(){
   smooth_all(prob_dens,0,size_Models);
 }
 
-void Particle_IC_Constructor::init(string type,double al,double newton_g,double rho,double r,int nbin,double rmax,int rseed,bool trunc_flag,double trunc_fac,int r_col,int rho_col,const char* Filename){
+void Particle_IC_Constructor::init(string type,double al,double newton_g,double rho,double r,int nbin,double rmax,bool trunc_flag,double trunc_fac,int r_col,int rho_col,const char* Filename){
   Table_MassProf_r_Models=NULL;
   Table_MassProf_M_Models=NULL;
   Table_MassProf_rho_Models=NULL;

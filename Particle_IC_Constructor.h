@@ -29,7 +29,6 @@ extern int LoadTable( double *&Data, const char *FileName, const int NCol_Target
 
 #define size_Models 1000
 typedef struct Models_Input_Parameter{
-   int*    Models_RSeed;
    double* Models_Rho0;
    double* Models_R0;
    double* Models_MaxR;
@@ -54,7 +53,7 @@ class Particle_IC_Constructor
     public:
         Particle_IC_Constructor();
         virtual ~Particle_IC_Constructor();
-        void init(string type,double al,double newton_g,double rho,double r,int nbin,double rmax,int rseed,bool trunc_flag,double trunc_fac,int r_col,int rho_col,const char* Filename);        
+        void init(string type,double al,double newton_g,double rho,double r,int nbin,double rmax,bool trunc_flag,double trunc_fac,int r_col,int rho_col,const char* Filename);        
         double set_vel(double x);
         double set_radius();
         double set_vel_test(double r);
